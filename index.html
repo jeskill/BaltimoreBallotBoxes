@@ -227,7 +227,6 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-
         function style_BallotDropBoxes_1_0(feature) {
             switch(String(feature.properties['Type'])) {
                 case 'Drop Box':
@@ -255,10 +254,10 @@
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1,
+                weight: 2.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(255,0,0,0.85)',
+                fillColor: 'rgba(156,22,88,0.85)',
                 interactive: true,
             }
                     break;
@@ -278,24 +277,9 @@
                 interactive: true,
             }
                     break;
-                default:
-                    return {
-                pane: 'pane_BallotDropBoxes_1',
-                radius: 8.0,
-                opacity: 1,
-                color: 'rgba(50,87,128,0.85)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(122,4,3,0.85)',
-                interactive: true,
-            }
-                    break;
             }
         }
+        
         map.createPane('pane_BallotDropBoxes_1');
         map.getPane('pane_BallotDropBoxes_1').style.zIndex = 401;
         map.getPane('pane_BallotDropBoxes_1').style['mix-blend-mode'] = 'normal';
@@ -370,7 +354,22 @@
             }
         });
         var overlaysTree = [
-            {label: 'Ballot Drop Boxes<br /><table><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBox0.png" /></td><td>Drop Box</td></tr><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBoxEarlyVoting1.png" /></td><td>Drop Box/Early Voting</td></tr><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_EarlyVoting2.png" /></td><td>Early Voting</td></tr><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_3.png" /></td><td></td></tr></table>', layer: layer_BallotDropBoxes_1},            //{label: "OSM Humanitarian Data Model", layer: layer_OSMHumanitarianDataModel_0, radioGroup: 'bm' },
+            {label: 'Ballot Drop Boxes<br />\
+            <table>\
+                <tr>\
+                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBox0.png" /></td>\
+                    <td>Drop Box</td>\
+                </tr>\
+                <tr>\
+                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBoxEarlyVoting1.png" /></td>\
+                    <td>Drop Box/Early Voting</td>\
+                </tr>\
+                <tr>\
+                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_EarlyVoting2.png" /></td>\
+                    <td>Early Voting</td>\
+                </tr>\
+            </table>', layer: layer_BallotDropBoxes_1},
+            //{label: "OSM Humanitarian Data Model", layer: layer_OSMHumanitarianDataModel_0, radioGroup: 'bm' },
             ]
         var lay = L.control.layers.tree(null, overlaysTree,{
             //namedToggle: true,
