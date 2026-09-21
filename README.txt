@@ -1,3 +1,7 @@
+# This is a map of ballot drop boxes and early voting centers in Baltimore City. Locations and addresses are sourced from Baltimore City:
+https://s3.amazonaws.com/baltimorecity.gov.if-us-east-1/s3fs-public/2025-12/updated_ballot_drop_off_locations-2026.pdf
+https://www.baltimorecity.gov/boe/our-work/election-information/voting-centers
+
 # README – Standalone qgis2web Export
 
 This export is completely "self-contained".
