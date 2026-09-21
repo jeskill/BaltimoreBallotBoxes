@@ -21,7 +21,7 @@
             margin: 0;
         }
         </style>
-        <title>Ballot Box</title>
+        <title>Baltimore Early Voting Map</title>
     </head>
     <body>
         <div id="map">
@@ -206,6 +206,10 @@
             });
             var popupContent = '<table>\
                     <tr>\
+                        <th scope="row">Location Type</th>\
+                        <td colspan="2">' + (feature.properties['Type'] !== null ? autolinker.link(String(feature.properties['Type']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
                         <th scope="row">Location Name</th>\
                         <td>' + (feature.properties['site name'] !== null ? autolinker.link(String(feature.properties['site name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
@@ -213,7 +217,9 @@
                         <th scope="row">Address</th>\
                         <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
-                </table>';
+                </table><p>Are you registered to vote? Check here: https://voterservices.elections.maryland.gov/VoterSearch </p><p>Drop Boxes are open now until 8pm on November 3rd, 2026.</p><p>You can vote in person at Early Voting Sites from Thursday, October 22, 2026 through Thursday, October 29, 2026, 7 a.m. to 8 p.m.</p>'
+
+
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
 				addClassToPopupIfMedia(content, e.popup);
@@ -221,20 +227,73 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_BallotDropBoxes_1_0() {
-            return {
+
+        function style_BallotDropBoxes_1_0(feature) {
+            switch(String(feature.properties['Type'])) {
+                case 'Drop Box':
+                    return {
                 pane: 'pane_BallotDropBoxes_1',
                 radius: 8.0,
                 opacity: 1,
-                color: 'rgba(50,87,128,0.97)',
+                color: 'rgba(255,255,255,0.85)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 2.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(72,123,182,0.97)',
+                fillColor: 'rgba(56,44,176,0.85)',
                 interactive: true,
+            }
+                    break;
+                case 'Drop Box/Early Voting':
+                    return {
+                pane: 'pane_BallotDropBoxes_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,0.85)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,0,0,0.85)',
+                interactive: true,
+            }
+                    break;
+                case 'Early Voting':
+                    return {
+                pane: 'pane_BallotDropBoxes_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,0.85)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,0,0,0.85)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_BallotDropBoxes_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,0.85)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,4,3,0.85)',
+                interactive: true,
+            }
+                    break;
             }
         }
         map.createPane('pane_BallotDropBoxes_1');
@@ -311,8 +370,7 @@
             }
         });
         var overlaysTree = [
-            {label: '<img src="legend/BallotDropBoxes_1.png" /> Ballot Drop Boxes', layer: layer_BallotDropBoxes_1},
-            //{label: "OSM Humanitarian Data Model", layer: layer_OSMHumanitarianDataModel_0, radioGroup: 'bm' },
+            {label: 'Ballot Drop Boxes<br /><table><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBox0.png" /></td><td>Drop Box</td></tr><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBoxEarlyVoting1.png" /></td><td>Drop Box/Early Voting</td></tr><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_EarlyVoting2.png" /></td><td>Early Voting</td></tr><tr><td style="text-align: center;"><img src="legend/BallotDropBoxes_1_3.png" /></td><td></td></tr></table>', layer: layer_BallotDropBoxes_1},            //{label: "OSM Humanitarian Data Model", layer: layer_OSMHumanitarianDataModel_0, radioGroup: 'bm' },
             ]
         var lay = L.control.layers.tree(null, overlaysTree,{
             //namedToggle: true,
