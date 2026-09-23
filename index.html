@@ -402,6 +402,19 @@
         map.on("layerremove", function(){
             resetLabels([layer_BallotDropBoxes_1]);
         });
+
+        let textbox   = L.Control.extend({
+            onAdd: function() {
+            
+        var text = L.DomUtil.create('div');
+            text.id = "info_text";
+            text.innerHTML = "<h2>" + "your text" + "</h2>";
+        return text;
+        },
+
+        });
+    
+        new textbox({ position: 'topleft' }).addTo(map);
         </script>        
     </body>
 </html>
