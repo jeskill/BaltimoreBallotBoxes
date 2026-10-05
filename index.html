@@ -13,15 +13,56 @@
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/leaflet-search.css">
         <link rel="stylesheet" href="css/leaflet.photon.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
         <style>
         html, body, #map {
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
+
+        /* TITLE AND LOGO STYLE */
+        .custom-map-panel {
+            background: rgba(255,255,255,0.01); /*white with 85% opacity*/
+            padding: 2px;
+            border-radius: 10px;
+            max-width: 25%; 
+            text-align: justify;           
+            display: flex;
+            flex-direction: column;
+            align-items:flex-start;
+            gap: 2px;
         }
+        .custom-map-panel img {
+            max-width: min(100%, 25vw);
+            height: auto;
+            border-radius: 1px;
+        }
+
+        .custom-map-panel h1 {
+            margin: 0;
+            font-size: clamp(32px, 5vw, 60px); /* Adjust the font size as needed */
+            line-height: 1.2;
+            font-family: 'Permanent Marker', cursive; /* Use the same font as the main title */ 
+            color: #fabe39; /* Match the color of the main title */
+            text-shadow:
+                -3px -3px 0 black,
+                3px -3px 0 black,
+                -3px 3px 0 black,
+                3px 3px 0 black;
+        }
+        .custom-map-panel p {   
+            margin: 0;
+            background: rgba(255,255,255,0.75); /*white with 85% opacity*/
+            font-size: clamp(10px, 1.5vw, 14px); /* Adjust the font size as needed */
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: #333; /* Set the text color */
+        }
+        
         </style>
-        <title>Baltimore Early Voting Map</title>
+        <title>Baltimore Vote Early</title>
     </head>
     <body>
         <div id="map">
@@ -43,30 +84,11 @@
         <script>
 
         // HIGHLIGHT FEATURE
+
         var highlightLayer;
         function highlightFeature(e) {
-             highlightLayer = e.target;
-
-            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
-               highlightLayer.setStyle({
-                 color: 'rgba(255, 255, 0, 1.00)',
-               });
-             } else {
-               highlightLayer.setStyle({
-                 fillColor: 'rgba(255, 255, 0, 1.00)',
-                 fillOpacity: 1
-               });
-             }
-             highlightLayer.openPopup();
-         }
-        
-        // RESET HIGHLIGHT
-        function resetHighlight(e) {
-            var layer = e.target;
-            highlightLayer.setStyle({
-                fillColor: 'rgba(72,123,182,0.97)',
-                fillOpacity: 1
-            })
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
         }
 
         // INITIATE MAP
@@ -151,16 +173,28 @@
                 popup._contentNode.classList.remove('media');
             }
         }
-        var title = new L.Control({'position':'topright'});
+
+
+        var title = new L.Control({'position':'bottomleft'});
+
         title.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info');
+            //1. create div element and assign it to the instance variable this._div
+            this._div = L.DomUtil.create('div', 'custom-map-panel');
             this.update();
             return this._div;
         };
+       
+        // 2. Set initial content.
         title.update = function () {
-            this._div.innerHTML = '<h2>Ballot Box Locations in Baltimore City</h2>';
+            this._div.innerHTML = '<img src="images/NoKingsVoteEarly_Logo_horizontal_lightbg_nocrown.png" alt="Panel Image">\
+            <h1>Baltimore</h1>\
+            <p>Ballot Drop Boxes are open now until 8pm on November 3rd, 2026.</p>\
+            <p>Vote in person at Early Voting Sites from Thursday, October 22, 2026 through Thursday, October 29, 2026, 7 a.m. to 8 p.m.</p>';  
         };
+
         title.addTo(map);
+
+
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
@@ -202,7 +236,7 @@
                     }
                 },
                 mouseover: highlightFeature,
-                mouseout: resetHighlight
+
             });
             var popupContent = '<table>\
                     <tr>\
@@ -216,8 +250,7 @@
                     <tr>\
                         <th scope="row">Address</th>\
                         <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table><p>Are you registered to vote? Check here: https://voterservices.elections.maryland.gov/VoterSearch </p><p>Drop Boxes are open now until 8pm on November 3rd, 2026.</p><p>You can vote in person at Early Voting Sites from Thursday, October 22, 2026 through Thursday, October 29, 2026, 7 a.m. to 8 p.m.</p>'
+                    </tr>'
 
 
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -229,51 +262,51 @@
 
         function style_BallotDropBoxes_1_0(feature) {
             switch(String(feature.properties['Type'])) {
-                case 'Drop Box':
+                case 'Ballot Drop Box':
                     return {
                 pane: 'pane_BallotDropBoxes_1',
                 radius: 8.0,
                 opacity: 1,
-                color: 'rgba(255,255,255,0.85)',
+                color: 'rgba(0,0,0,0.85)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 2.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(56,44,176,0.85)',
+                fillColor: 'rgba(94,156,202,0.85)',
                 interactive: true,
             }
                     break;
-                case 'Drop Box/Early Voting':
+                case 'Drop Box & Early Voting':
                     return {
                 pane: 'pane_BallotDropBoxes_1',
                 radius: 8.0,
                 opacity: 1,
-                color: 'rgba(255,255,255,0.85)',
+                color: 'rgba(249,179,22,0.85)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 2.0,
+                weight: 5.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(156,22,88,0.85)',
+                fillColor: 'rgba(94,156,202,0.85)',
                 interactive: true,
             }
                     break;
-                case 'Early Voting':
+                case 'Early Voting Site':
                     return {
                 pane: 'pane_BallotDropBoxes_1',
                 radius: 8.0,
                 opacity: 1,
-                color: 'rgba(255,255,255,0.85)',
+                color: 'rgba(0,0,0,0.85)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 2.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(255,0,0,0.85)',
+                fillColor: 'rgba(249,179,22,0.85)',
                 interactive: true,
             }
                     break;
@@ -353,20 +386,22 @@
                 last.style.display = "none";
             }
         });
+
+        // LEGEND
         var overlaysTree = [
-            {label: 'Ballot Drop Boxes<br />\
+            {label: 'Early Voting Sites & Ballot Drop Boxes<br />\
             <table>\
                 <tr>\
-                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBox0.png" /></td>\
-                    <td>Drop Box</td>\
+                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_EarlyVotingSite2.png" /></td>\
+                    <td>Early Voting Site (1) </td>\
                 </tr>\
                 <tr>\
                     <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_DropBoxEarlyVoting1.png" /></td>\
-                    <td>Drop Box/Early Voting</td>\
+                    <td>Early Voting Site & Ballot Drop Box (8)</td>\
                 </tr>\
                 <tr>\
-                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_EarlyVoting2.png" /></td>\
-                    <td>Early Voting</td>\
+                    <td style="text-align: center;"><img src="legend/BallotDropBoxes_1_BallotDropBox0.png" /></td>\
+                    <td>Ballot Drop Box (25)</td>\
                 </tr>\
             </table>', layer: layer_BallotDropBoxes_1},
             //{label: "OSM Humanitarian Data Model", layer: layer_OSMHumanitarianDataModel_0, radioGroup: 'bm' },
