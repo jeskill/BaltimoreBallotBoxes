@@ -44,7 +44,7 @@
 
         .custom-map-panel h1 {
             margin: 0;
-            font-size: clamp(32px, 5vw, 60px); /* Adjust the font size as needed */
+            font-size: clamp(12px, 5vw, 72px); /* Adjust the font size as needed */
             line-height: 1.2;
             font-family: 'Permanent Marker', cursive; /* Use the same font as the main title */ 
             color: #fabe39; /* Match the color of the main title */
@@ -57,7 +57,7 @@
         .custom-map-panel p {   
             margin: 0;
             background: rgba(255,255,255,0.75); /*white with 85% opacity*/
-            font-size: clamp(10px, 1.5vw, 14px); /* Adjust the font size as needed */
+            font-size: clamp(12px, 1.5vw, 14px); /* Adjust the font size as needed */
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             color: #333; /* Set the text color */
         }
@@ -237,8 +237,12 @@
                     }
                 },
                 mouseover: highlightFeature,
-
             });
+
+            const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(feature.properties['address']);
+            const appleMapsUrl = 'https://maps.apple.com/?q=' + encodeURIComponent(feature.properties['address']);
+            const mapsLinks = '<a href="' + googleMapsUrl + '" target="_blank">Google Maps</a> | <a href="' + appleMapsUrl + '" target="_blank">Apple Maps</a>';
+
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">Location Type</th>\
@@ -251,8 +255,12 @@
                     <tr>\
                         <th scope="row">Address</th>\
                         <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>'
-
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Maps</th>\
+                        <td colspan="2">' + mapsLinks + '</td>\
+                    </tr>\
+                </table>';
 
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
@@ -360,7 +368,7 @@
             obj2.gcd = e.choice;
             x = L.geoJSON(obj2.gcd).addTo(map);
             var label = typeof obj2.gcd.properties.label === 'undefined' ? obj2.gcd.properties.display_name : obj2.gcd.properties.label;
-            obj3.marker = L.marker(x.getLayers()[0].getLatLng()).bindPopup(label).addTo(map);
+            obj3.marker = L.marker(x.getLayers()[0].getLatLng()).bindPopup(label).addTo(map).openPopup(label);
             map.setView(x.getLayers()[0].getLatLng(), 17);
             z = typeof e.choice.properties.label === 'undefined'? e.choice.properties.display_name : e.choice.properties.label;
             console.log(e);
